@@ -11,7 +11,7 @@ cd ~/catkin_ws/
 catkin_make
 fi
 
-source devel/setup.bash
+source ~/catkin_ws/devel/setup.bash
 
 # http://wiki.ros.org/ROS/Tutorials/CreatingPackage
 # Creating package

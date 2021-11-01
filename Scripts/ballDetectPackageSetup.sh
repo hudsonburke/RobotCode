@@ -13,7 +13,7 @@ source devel/setup.bash
 cd ~/catkin_ws/src
 
 # dependencies may need to change
-catkin_create_pkg ball_detect std_msgs sensor_msgs nav_msgs geometry_msgs visualization_msgs cv_bridge rospy roscpp
+catkin_create_pkg ball_detect roslib std_msgs sensor_msgs nav_msgs geometry_msgs visualization_msgs cv_bridge tf rospy roscpp
 
 cd ~/catkin_ws
 catkin_make

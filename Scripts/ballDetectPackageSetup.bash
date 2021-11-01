@@ -28,8 +28,8 @@ catkin_create_pkg $PKG_NAME $DEPENDENCIES
 cd ~/catkin_ws
 catkin_make
 
-. ~/catkin_ws/devel/setup.bash
+source ~/catkin_ws/devel/setup.bash
 
 # http://wiki.ros.org/ROS/Tutorials/BuildingPackages
-source /opt/ros/melodic/setup.bash
+source ~/catkin_ws/opt/ros/melodic/setup.bash
 

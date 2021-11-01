@@ -3,7 +3,7 @@
 # http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment
 echo "Checking for catkin workspace..."
 source /opt/ros/melodic/setup.bash
-if [! -d ~/catkin_ws/]
+if [ ! -d ~/catkin_ws/ ]
 then 
 echo "Setting up catkin workspace..."
 mkdir -p ~/catkin_ws/src

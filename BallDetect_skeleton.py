@@ -131,6 +131,4 @@ if __name__ == "__main__":
     rate = rospy.Rate(10)
     while not rospy.is_shutdown():
         # Publish the (x,y) coordinates of the ball in the pixel coordinates
-        tracker.image_cb()
-        tracker.pub_viz()
         rate.sleep()

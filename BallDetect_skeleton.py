@@ -34,10 +34,10 @@ class Tracker3D():
     # <point_cloud> : POint cloud from depth camera
     ################
     
-    def __init__(self,img_topic_name=<raw_image>,depth_topic_name=<point_cloud>,see_image=False):
+    def __init__(self,img_topic_name="usb_cam/raw_image",see_image=False):
         
         self.image_sub = rospy.Subscriber(img_topic_name,Image,self.image_cb)
-        self.depth_sub = rospy.Subscriber(depth_topic_name,Image,self.depth_cb)
+        # self.depth_sub = rospy.Subscriber(depth_topic_name,Image,self.depth_cb)
 
         self.ballloc_pixel = [0,0]
         self.ballloc_xyz = [0,0,0]
@@ -56,7 +56,7 @@ class Tracker3D():
         # Wait for messages to be published on image and depth topics
         print("Waiting for image and depth topic")
         rospy.wait_for_message(img_topic_name,Image)
-        rospy.wait_for_message(depth_topic_name,Image)
+        # rospy.wait_for_message(depth_topic_name,Image)
         print("-----> Messages received")
 
         self.rate = rospy.Rate(20)

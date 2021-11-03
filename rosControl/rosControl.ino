@@ -53,11 +53,6 @@ void rightTurnCallback(geometry_msgs::Twist& cmd_vel){
 
 void gripperCallback(geometry_msgs::Twist& cmd_vel){
     leftServo.write(cmd_vel.linear.x*180);
-    //if(cmd_vel.linear.x == 0 || cmd_vel.linear.x > 0){
-        //Gripper.Open();
-    //} else{
-       // Gripper.Close();
-    //}
 }
 
 ros::Subscriber<geometry_msgs::Twist> driveSub("drive", driveCallback);

@@ -34,7 +34,7 @@ class Tracker3D():
     # <point_cloud> : POint cloud from depth camera
     ################
     
-    def __init__(self,img_topic_name="usb_cam/raw_image",see_image=False):
+    def __init__(self,img_topic_name="/usb_cam/image_raw",see_image=False):
         
         self.image_sub = rospy.Subscriber(img_topic_name,Image,self.image_cb)
         # self.depth_sub = rospy.Subscriber(depth_topic_name,Image,self.depth_cb)
@@ -115,6 +115,7 @@ class Tracker3D():
                 cv2.drawContours(self.cv_image, [c], -1, (0, 255, 0), 2)
                 cv2.circle(self.cv_image, (cX, cY), 7, (255, 255, 255), -1)
             self.center = (cX, cY)
+        
 
 
     def depth_cb(self,data):

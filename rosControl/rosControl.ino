@@ -2,7 +2,7 @@
 
 #include <ros.h>
 #include <geometry_msgs/Twist.h>
-#include "driveControl.h"
+#include "controller.h"
 #include "gripper.h"
 
 #define LEFTPWM 3
@@ -26,8 +26,6 @@ Controller Left;
 Controller Right;
 
 Gripper Gripper;
-
-DriveControl Control;
 
 Servo leftServo;
 
@@ -53,7 +51,11 @@ void driveCallback(geometry_msgs::Twist& cmd_vel){
     Right.Drive(abs(drive_speed+turn_speed)*DRIVE_SCALE, right_dir);
 
     // OR
-    
+    float drive_speed = cmd_vel.linear.x;
+    float turn_speed = cmd_vel.linear.z;
+
+    Left.Drive((drive_speed-turn_speed)*DRIVE_SCALE);
+    Right.Drive((drive_speed+turn_speed)*DRIVE_SCALE);
 }
 
 
@@ -74,8 +76,6 @@ void setup() {
     Gripper.init(LEFT_SERVO_PWM_PIN, RIGHT_SERVO_PWM_PIN, LEFT_SERVO_POS, RIGHT_SERVO_POS);
     Left.init(LEFTPWM, LEFTA, LEFTB);
     Right.init(RIGHTPWM, RIGHTA, RIGHTB);
-    
-    Control.setControllers(Left, Right);
 }
 
 void loop() {

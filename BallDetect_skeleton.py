@@ -34,10 +34,10 @@ class Tracker3D():
     # <point_cloud> : POint cloud from depth camera
     ################
     
-    def __init__(self,img_topic_name="/usb_cam/image_raw",see_image=False):
+    def __init__(self,img_topic_name="/usb_cam/image_raw", depth_topic_name="/camera/depth/color/points", see_image=False): #double check the depth topic name in rviz when this done
         
         self.image_sub = rospy.Subscriber(img_topic_name,Image,self.image_cb)
-        # self.depth_sub = rospy.Subscriber(depth_topic_name,Image,self.depth_cb)
+        self.depth_sub = rospy.Subscriber(depth_topic_name,Image,self.depth_cb)
 
         self.ballloc_pixel = [0,0]
         self.ballloc_xyz = [0,0,0]
@@ -56,7 +56,7 @@ class Tracker3D():
         # Wait for messages to be published on image and depth topics
         print("Waiting for image and depth topic")
         rospy.wait_for_message(img_topic_name,Image)
-        # rospy.wait_for_message(depth_topic_name,Image)
+        rospy.wait_for_message(depth_topic_name,Image)
         print("-----> Messages received")
 
         self.rate = rospy.Rate(20)
@@ -74,10 +74,10 @@ class Tracker3D():
 
     def pub_viz(self):
         # Publish the marker for the ball
-        pub = rospy.Publisher('markedImage', Image)
-        rospy.init_node('pub_viz', anonymous=True)
-        while not rospy.is_shutdown():
-            pub.publish(self.cv_image)
+        pub = rospy.Publisher('markedImage', Image, queue_size=100)
+        #rospy.init_node('pub_viz', anonymous=True)
+        #while not rospy.is_shutdown():
+        #    pub.publish(self.cv_image, Image)
         
 
     def image_cb(self,data):
@@ -91,7 +91,7 @@ class Tracker3D():
 
 	    # Define lower and upper range of the colors to generate a mask using hsv 
         sensitivity = 15
-        lower_green = np.array([60-sensitivity, 100, 100])
+        lower_green = np.array([60-sensitivity, 90, 90])
         upper_green = np.array([60+sensitivity, 255, 255])
         mask = cv2.inRange(cv_image_hsv, lower_green, upper_green)
 
@@ -109,20 +109,30 @@ class Tracker3D():
             for c in cnts:
                 # compute the center of the contour https://www.pyimagesearch.com/2016/02/01/opencv-center-of-contour/
                 M = cv2.moments(c)
-                cX = int(M["m10"] / M["m00"])
-                cY = int(M["m01"] / M["m00"])
+		if M["m00"] != 0:
+		 cX = int(M["m10"] / M["m00"])
+		 cY = int(M["m01"] / M["m00"])
+		 (x,y),radius=cv2.minEnclosingCircle(c)
+		 center = (int(x), int(y))
+		 radius = int(radius)
+		 #cv2.circle(self.cv_image, center, radius, (0,255,0),2)
+		 #cv2.circle(self.cv_image, center, 7, (255, 255, 255), -1)
+		else:
+		 cX, cY = 0, 0
+		 center = (0,0)
                 # draw the contour and center of the shape on the image
-                cv2.drawContours(self.cv_image, [c], -1, (0, 255, 0), 2)
-                cv2.circle(self.cv_image, (cX, cY), 7, (255, 255, 255), -1)
-            self.center = (cX, cY)
-        
+                print("cX, cY", cX, cY)
+		cv2.drawContours(self.cv_image, [c], -1, (0, 255, 0), 2)
+            cv2.circle(self.cv_image, (cX, cY), 7, (255, 255, 255), -1)    
+            self.center = center
+	cv2.imshow("Window",self.cv_image)
+	cv2.waitKey(1)
+
+		
 
 
     def depth_cb(self,data):
-        try:
-            self.depth_image = bridge.imgmsg_to_cv2(data,"16UC1")
-        except CvBridgeError as e:
-            print(e)
+        self.depth_image=data
 
 
 if __name__ == "__main__":

@@ -32,40 +32,39 @@ DriveControl Control;
 Servo leftServo;
 
 void driveCallback(geometry_msgs::Twist& cmd_vel){
-    bool direction = FORWARD;
-    if (cmd_vel.linear.x < 0){
-        direction = BACKWARD;
+    float drive_speed = cmd_vel.linear.x;
+    float turn_speed = cmd_vel.linear.z;
+    bool left_dir = right_dir = FORWARD;
+    if (drive_speed < 0){
+        left_dir=right_dir=BACKWARD;
+    } else if (drive_speed == 0){
+        if (turn_speed > 0){
+            // Left turn
+            left_dir = BACKWARD;
+            right_dir = FORWARD;
+        } else if (turn_speed < 0){
+            // Right Turn
+            left_dir = FORWARD;
+            right_dir = BACKWARD;
+        }
     }
-    Left.Drive(abs(cmd_vel.linear.x)*DRIVE_SCALE, direction);
-    Right.Drive(abs(cmd_vel.linear.x)*DRIVE_SCALE, direction);
+
+    Left.Drive(abs(drive_speed-turn_speed)*DRIVE_SCALE, left_dir);
+    Right.Drive(abs(drive_speed+turn_speed)*DRIVE_SCALE, right_dir);
 }
 
-void leftTurnCallback(geometry_msgs::Twist& cmd_vel){
-    Left.Drive(abs(cmd_vel.linear.x)*DRIVE_SCALE, 0);
-    Right.Drive(abs(cmd_vel.linear.x)*DRIVE_SCALE, 1);
-}
-
-void rightTurnCallback(geometry_msgs::Twist& cmd_vel){
-    Left.Drive(abs(cmd_vel.linear.x)*DRIVE_SCALE, 1);
-    Right.Drive(abs(cmd_vel.linear.x)*DRIVE_SCALE, 0);
-
-}
 
 void gripperCallback(geometry_msgs::Twist& cmd_vel){
     leftServo.write(cmd_vel.linear.x*180);
 }
 
 ros::Subscriber<geometry_msgs::Twist> driveSub("drive", driveCallback);
-ros::Subscriber<geometry_msgs::Twist> leftSub("leftTurn", leftTurnCallback);
-ros::Subscriber<geometry_msgs::Twist> rightSub("rightTurn", rightTurnCallback);
 ros::Subscriber<geometry_msgs::Twist> gripperSub("gripper", gripperCallback);
 
 
 void setup() {
     nh.initNode();
     nh.subscribe(driveSub);
-    nh.subscribe(leftSub);
-    nh.subscribe(rightSub);
     nh.subscribe(gripperSub);
     
     leftServo.attach(9);

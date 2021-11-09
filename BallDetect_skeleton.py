@@ -14,6 +14,7 @@ from sensor_msgs.msg import CompressedImage
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import CameraInfo
 from sensor_msgs.msg import PointCloud2
+import sensor_msgs.point_cloud2
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import PoseWithCovariance
 from geometry_msgs.msg import Point
@@ -36,7 +37,7 @@ class Tracker3D():
     ################
 
     # double check the depth topic name in rviz when this done
-    def __init__(self, img_topic_name="/d400/color/image_raw", depth_topic_name="/d400/depth/color/points", see_image=False):
+    def __init__(self, img_topic_name="/camera/color/image_raw", depth_topic_name="/camera/depth_registered/points", see_image=False):
 
         self.image_sub = rospy.Subscriber(img_topic_name, Image, self.image_cb)
         self.depth_sub = rospy.Subscriber(depth_topic_name, PointCloud2, self.depth_cb)
@@ -71,20 +72,21 @@ class Tracker3D():
 
     def pub_viz(self):
         # Publish the marker for the ball
-        while not rospy.is_shutdown():
-            marker = Marker()
-            marker.type = marker.SPHERE
-            marker.action = marker.ADD
-            marker.pose.position.x = self.ballloc_xyz[0]
-            marker.pose.position.y = self.ballloc_xyz[1]
-            marker.pose.position.z = self.ballloc_xyz[2]
-            marker.color.r = 1.0
-            marker.color.g = 0.0
-            marker.color.b = 0.0
-            marker.scale.x = 0.1
-            marker.scale.y = 0.1
-            marker.scale.z = 0.1
-            self.marker_pub.publish(marker)
+	marker = Marker()
+        marker.type = marker.SPHERE
+        marker.action = marker.ADD
+        marker.pose.position.x = self.ballloc_xyz[0]
+        marker.pose.position.y = self.ballloc_xyz[1]
+        marker.pose.position.z = self.ballloc_xyz[2]
+        marker.color.r = 0.0
+        marker.color.g = 1.0
+        marker.color.b = 0.0
+        marker.color.a = 1.0
+	marker.scale.x = 0.1
+        marker.scale.y = 0.1
+        marker.scale.z = 0.1
+	marker.header.frame_id = "/d400_depth_frame"
+        self.marker_pub.publish(marker)
             
 
     def image_cb(self, data):
@@ -117,29 +119,29 @@ class Tracker3D():
                 if M["m00"] != 0:
                     cX = int(M["m10"] / M["m00"])
                     cY = int(M["m01"] / M["m00"])
-                # (x, y), radius = cv2.minEnclosingCircle(c)
+ 		    self.ballloc_pixel = [cX, cY]
+#                    print("cX, cY", cX, cY)
+                    cv2.drawContours(self.cv_image, [c], -1, (0, 255, 0), 2)
+            	    cv2.circle(self.cv_image, (cX, cY), 7, (255, 255, 255), -1)               
+
+	        # (x, y), radius = cv2.minEnclosingCircle(c)
                 # self.ballloc_pixel = [int(x), int(y)]
                 # radius = int(radius)
                 #cv2.circle(self.cv_image, center, radius, (0,255,0),2)
                 #cv2.circle(self.cv_image, center, 7, (255, 255, 255), -1)
-                else:
-                    cX, cY = 0, 0
                 # draw the contour and center of the shape on the image
-                self.ballloc_pixel = [cX, cY]
-                print("cX, cY", cX, cY)
-                cv2.drawContours(self.cv_image, [c], -1, (0, 255, 0), 2)
-            cv2.circle(self.cv_image, (cX, cY), 7, (255, 255, 255), -1)
+               
         cv2.imshow("Window", self.cv_image)
         cv2.waitKey(1)
 
 
     def depth_cb(self, data):
         self.depth_image = data
-        for point in sensor_msgs.point_cloud2.read_points(data, skip_nans=True, uvs=self.ballloc_pixel):
-            self.ballloc_xyz[0] = point[0]
+        for point in sensor_msgs.point_cloud2.read_points(data, skip_nans=True, uvs=[self.ballloc_pixel]):
+	    self.ballloc_xyz[0] = point[0]
             self.ballloc_xyz[1] = point[1]
             self.ballloc_xyz[2] = point[2]
-        self.pub_viz()
+	    print(self.ballloc_xyz)
 
 if __name__ == "__main__":
     rospy.init_node("measure_3d")
@@ -148,4 +150,5 @@ if __name__ == "__main__":
     rate = rospy.Rate(10)
     while not rospy.is_shutdown():
         # Publish the (x,y) coordinates of the ball in the pixel coordinates
-        rate.sleep()
+        tracker.pub_viz()
+	rate.sleep()

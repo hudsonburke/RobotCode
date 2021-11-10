@@ -23,6 +23,15 @@ void Controller::Drive(byte Speed, bool Forward) {
     digitalWrite(INBPIN, !Forward);
 };
 
+void Controller::Drive(int8_t Speed){
+    bool direction = FORWARD;
+    if (Speed < 0){
+        direction = BACKWARD;
+    }
+    this->Drive(Speed, direction);
+}
+
+
 void Controller::Stop() {
     SetPWMA(255);
     digitalWrite(INAPIN, LOW);

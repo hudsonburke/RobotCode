@@ -15,6 +15,7 @@ class Controller{
         ~Controller();
 
         void Drive(byte Speed, bool Forward);
+        void Drive(int8_t Speed);
         void Stop();
         void Coast();
 

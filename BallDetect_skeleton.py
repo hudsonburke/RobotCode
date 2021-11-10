@@ -40,7 +40,8 @@ class Tracker3D():
     def __init__(self, img_topic_name="/camera/color/image_raw", depth_topic_name="/camera/depth_registered/points", see_image=False):
 
         self.image_sub = rospy.Subscriber(img_topic_name, Image, self.image_cb)
-        self.depth_sub = rospy.Subscriber(depth_topic_name, PointCloud2, self.depth_cb)
+        self.depth_sub = rospy.Subscriber(
+            depth_topic_name, PointCloud2, self.depth_cb)
         self.marker_pub = rospy.Publisher("visualization_marker", Marker)
         self.ballloc_pixel = [0, 0]
         self.ballloc_xyz = [0, 0, 0]
@@ -68,11 +69,10 @@ class Tracker3D():
     def get_xyz(self):
         # Function to compute the x,y,z coordinates of the ball
         pass
-        
 
     def pub_viz(self):
         # Publish the marker for the ball
-	marker = Marker()
+        marker = Marker()
         marker.type = marker.SPHERE
         marker.action = marker.ADD
         marker.pose.position.x = self.ballloc_xyz[0]
@@ -82,12 +82,11 @@ class Tracker3D():
         marker.color.g = 1.0
         marker.color.b = 0.0
         marker.color.a = 1.0
-	marker.scale.x = 0.1
+        marker.scale.x = 0.1
         marker.scale.y = 0.1
         marker.scale.z = 0.1
-	marker.header.frame_id = "/d400_depth_frame"
+        marker.header.frame_id = "/d400_depth_frame"
         self.marker_pub.publish(marker)
-            
 
     def image_cb(self, data):
         try:
@@ -97,7 +96,7 @@ class Tracker3D():
 
         cv_image_hsv = cv2.cvtColor(self.cv_image, cv2.COLOR_BGR2HSV)
 
-            # Define lower and upper range of the colors to generate a mask using hsv
+        # Define lower and upper range of the colors to generate a mask using hsv
         sensitivity = 15
         lower_green = np.array([60-sensitivity, 90, 90])
         upper_green = np.array([60+sensitivity, 255, 255])
@@ -106,9 +105,10 @@ class Tracker3D():
         # Process your mask to reduce noise
         self.mask = cv2.bitwise_and(self.cv_image, self.cv_image, mask=mask)
 
-           # find contours in the mask and initialize the current
-           # (x, y) center of the ball and publish the (x,y) pixel coordinates of the ball
-        cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        # find contours in the mask and initialize the current
+        # (x, y) center of the ball and publish the (x,y) pixel coordinates of the ball
+        cnts = cv2.findContours(
+            mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         cnts = imutils.grab_contours(cnts)
         # only proceed if at least one contour was found
         if cnts:
@@ -119,29 +119,29 @@ class Tracker3D():
                 if M["m00"] != 0:
                     cX = int(M["m10"] / M["m00"])
                     cY = int(M["m01"] / M["m00"])
- 		    self.ballloc_pixel = [cX, cY]
+                    self.ballloc_pixel = [cX, cY]
 #                    print("cX, cY", cX, cY)
                     cv2.drawContours(self.cv_image, [c], -1, (0, 255, 0), 2)
-            	    cv2.circle(self.cv_image, (cX, cY), 7, (255, 255, 255), -1)               
+                    cv2.circle(self.cv_image, (cX, cY), 7, (255, 255, 255), -1)
 
-	        # (x, y), radius = cv2.minEnclosingCircle(c)
+                # (x, y), radius = cv2.minEnclosingCircle(c)
                 # self.ballloc_pixel = [int(x), int(y)]
                 # radius = int(radius)
                 #cv2.circle(self.cv_image, center, radius, (0,255,0),2)
                 #cv2.circle(self.cv_image, center, 7, (255, 255, 255), -1)
                 # draw the contour and center of the shape on the image
-               
+
         cv2.imshow("Window", self.cv_image)
         cv2.waitKey(1)
-
 
     def depth_cb(self, data):
         self.depth_image = data
         for point in sensor_msgs.point_cloud2.read_points(data, skip_nans=True, uvs=[self.ballloc_pixel]):
-	    self.ballloc_xyz[0] = point[0]
+            self.ballloc_xyz[0] = point[0]
             self.ballloc_xyz[1] = point[1]
             self.ballloc_xyz[2] = point[2]
-	    print(self.ballloc_xyz)
+            print(self.ballloc_xyz)
+
 
 if __name__ == "__main__":
     rospy.init_node("measure_3d")
@@ -151,4 +151,4 @@ if __name__ == "__main__":
     while not rospy.is_shutdown():
         # Publish the (x,y) coordinates of the ball in the pixel coordinates
         tracker.pub_viz()
-	rate.sleep()
+        rate.sleep()

@@ -18,7 +18,8 @@
 #define LEFT_SERVO_POS 0
 #define RIGHT_SERVO_POS 180
 
-#define DRIVE_SCALE 400
+#define DRIVE_SCALE 63
+#define TURN_SCALE 63
 
 ros::NodeHandle nh;
 
@@ -54,8 +55,8 @@ void driveCallback(geometry_msgs::Twist& cmd_vel){
     float drive_speed = cmd_vel.linear.x;
     float turn_speed = cmd_vel.angular.z;
     
-    Left.Drive((drive_speed-turn_speed)*DRIVE_SCALE);
-    Right.Drive((drive_speed+turn_speed)*DRIVE_SCALE);
+    Left.Drive(drive_speed*DRIVE_SCALE-turn_speed*TURN_SCALE);
+    Right.Drive(drive_speed*DRIVE_SCALE+turn_speed*TURN_SCALE);
 }
 
 

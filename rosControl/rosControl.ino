@@ -18,7 +18,7 @@
 #define LEFT_SERVO_POS 0
 #define RIGHT_SERVO_POS 180
 
-#define DRIVE_SCALE 63
+#define DRIVE_SCALE 127
 #define TURN_SCALE 63
 
 ros::NodeHandle nh;

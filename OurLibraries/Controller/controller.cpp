@@ -28,7 +28,7 @@ void Controller::Drive(int8_t Speed){
     if (Speed < 0){
         direction = BACKWARD;
     }
-    this->Drive(Speed, direction);
+    this->Drive((byte) ((int)(abs(Speed)/127)*255), direction);
 }
 
 

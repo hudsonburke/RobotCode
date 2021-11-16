@@ -31,32 +31,20 @@ Gripper Gripper;
 Servo leftServo;
 
 void driveCallback(geometry_msgs::Twist& cmd_vel){
-    // float drive_speed = cmd_vel.linear.x;
-    // float turn_speed = cmd_vel.linear.z;
-    // bool left_dir = right_dir = FORWARD;
-    // if (drive_speed < 0){
-    //     left_dir=right_dir=BACKWARD;
-    // } else if (drive_speed == 0){
-    //     if (turn_speed > 0){
-    //         // Left turn
-    //         left_dir = BACKWARD;
-    //         right_dir = FORWARD;
-    //     } else if (turn_speed < 0){
-    //         // Right Turn
-    //         left_dir = FORWARD;
-    //         right_dir = BACKWARD;
-    //     }
-    // }
 
-    // Left.Drive(abs(drive_speed-turn_speed)*DRIVE_SCALE, left_dir);
-    // Right.Drive(abs(drive_speed+turn_speed)*DRIVE_SCALE, right_dir);
-
-    // OR
     float drive_speed = cmd_vel.linear.x;
     float turn_speed = cmd_vel.angular.z;
-    
-    Left.Drive(drive_speed*DRIVE_SCALE-turn_speed*TURN_SCALE);
-    Right.Drive(drive_speed*DRIVE_SCALE+turn_speed*TURN_SCALE);
+    int8_t left_speed, right_speed;
+    if (drive_speed == 0){
+        left_speed = -turn_speed;
+        right_speed = turn_speed;
+    } else {
+        left_speed = drive_speed;
+        right_speed = drive_speed;
+    }
+
+    Left.Drive(left_speed);
+    Right.Drive(right_speed);
 }
 
 

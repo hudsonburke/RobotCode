@@ -52,7 +52,7 @@ void gripperCallback(geometry_msgs::Twist& cmd_vel){
     leftServo.write(cmd_vel.linear.x*180);
 }
 
-ros::Subscriber<geometry_msgs::Twist> driveSub("drive", driveCallback);
+ros::Subscriber<geometry_msgs::Twist> driveSub("cmd_vel", driveCallback);
 ros::Subscriber<geometry_msgs::Twist> gripperSub("gripper", gripperCallback);
 
 

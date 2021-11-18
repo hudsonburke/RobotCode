@@ -37,7 +37,7 @@ class Tracker3D():
     ################
 
     # double check the depth topic name in rviz when this done
-    def __init__(self, img_topic_name="/camera/color/image_raw", depth_topic_name="/camera/depth_registered/points", see_image=False):
+    def __init__(self, img_topic_name="/d400/color/image_raw", depth_topic_name="/d400/SOMETHING HERE IN LAUNCH FILE", see_image=False): #TODO: Change these topics
 
         self.image_sub = rospy.Subscriber(img_topic_name, Image, self.image_cb)
         self.depth_sub = rospy.Subscriber(
@@ -85,7 +85,7 @@ class Tracker3D():
         marker.scale.x = 0.1
         marker.scale.y = 0.1
         marker.scale.z = 0.1
-        marker.header.frame_id = "/d400_depth_frame"
+        marker.header.frame_id = "/map" # TODO: Change this
         self.marker_pub.publish(marker)
 
     def image_cb(self, data):

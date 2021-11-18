@@ -1,0 +1,48 @@
+roscore
+
+---- Compile and upload to Arduino ----
+arduino-cli compile --fqbn arduino:avr:uno ~/{PATH_TO_SKETCH}
+arduino-cli upload --port /dev/ttyACM0 --fqbn arduino:avr:uno ~/{PATH_TO_SKETCH}
+
+
+---- Launch Cameras ----
+roslaunch realsense2_camera rs_d400_and_t265.launch
+
+
+---- Launch Config ----
+roslaunch team3_2dnav my_robot_configuration.launch
+
+
+---- Launch Rosserial (included in Launch Config) ----
+rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0
+
+
+---- Localization ----
+roslaunch rtabmap_ros rtabmap.launch \
+   args:="--Mem/UseOdomGravity true --Optimizer/GravitySigma 0.3" \
+   odom_topic:=/t265/odom/sample \
+   frame_id:=t265_link \
+   rgbd_sync:=true \
+   depth_topic:=/d400/aligned_depth_to_color/image_raw \
+   rgb_topic:=/d400/color/image_raw \
+   camera_info_topic:=/d400/color/camera_info \
+   approx_rgbd_sync:=false \
+   visual_odometry:=false \
+   localization:=true \
+   database_path:="/home/team3/Desktop/rtabmap.db"
+
+Paths: /home/team3/Desktop/backLabMap.db
+	/home/team3/Desktop/firstmap.db
+
+
+---- Mapping ----
+roslaunch rtabmap_ros rtabmap.launch \
+   args:="-d --Mem/UseOdomGravity true --Optimizer/GravitySigma 0.3" \
+   odom_topic:=/t265/odom/sample \
+   frame_id:=t265_link \
+   rgbd_sync:=true \
+   depth_topic:=/d400/aligned_depth_to_color/image_raw \
+   rgb_topic:=/d400/color/image_raw \
+   camera_info_topic:=/d400/color/camera_info \
+   approx_rgbd_sync:=false \
+   visual_odometry:=false

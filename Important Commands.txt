@@ -29,7 +29,7 @@ roslaunch rtabmap_ros rtabmap.launch \
    approx_rgbd_sync:=false \
    visual_odometry:=false \
    localization:=true \
-   database_path:="/home/team3/Desktop/rtabmap.db"
+   database_path:="/home/team3/Desktop/frontLabMap.db"
 
 Paths: /home/team3/Desktop/backLabMap.db
 	/home/team3/Desktop/firstmap.db

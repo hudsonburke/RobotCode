@@ -37,7 +37,7 @@ class Tracker3D():
     ################
 
     # double check the depth topic name in rviz when this done
-    def __init__(self, img_topic_name="/d400/color/image_raw", depth_topic_name="/d400/SOMETHING HERE IN LAUNCH FILE", see_image=False): #TODO: Change these topics
+    def __init__(self, img_topic_name="/d400/color/image_raw", depth_topic_name="/d400/depth/color/points", see_image=False): #TODO: Change these topics
 
         self.image_sub = rospy.Subscriber(img_topic_name, Image, self.image_cb)
         self.depth_sub = rospy.Subscriber(
@@ -120,16 +120,8 @@ class Tracker3D():
                     cX = int(M["m10"] / M["m00"])
                     cY = int(M["m01"] / M["m00"])
                     self.ballloc_pixel = [cX, cY]
-#                    print("cX, cY", cX, cY)
                     cv2.drawContours(self.cv_image, [c], -1, (0, 255, 0), 2)
                     cv2.circle(self.cv_image, (cX, cY), 7, (255, 255, 255), -1)
-
-                # (x, y), radius = cv2.minEnclosingCircle(c)
-                # self.ballloc_pixel = [int(x), int(y)]
-                # radius = int(radius)
-                #cv2.circle(self.cv_image, center, radius, (0,255,0),2)
-                #cv2.circle(self.cv_image, center, 7, (255, 255, 255), -1)
-                # draw the contour and center of the shape on the image
 
         cv2.imshow("Window", self.cv_image)
         cv2.waitKey(1)

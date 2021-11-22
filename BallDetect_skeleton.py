@@ -37,12 +37,12 @@ class Tracker3D():
     ################
 
     # double check the depth topic name in rviz when this done
-    def __init__(self, img_topic_name="/d400/color/image_raw", depth_topic_name="/d400/depth/color/points", see_image=False): #TODO: Change these topics
+    def __init__(self, img_topic_name="/d400/color/image_raw", depth_topic_name="/d400/depth_registered/points", see_image=False): #TODO: Change these topics
 
         self.image_sub = rospy.Subscriber(img_topic_name, Image, self.image_cb)
         self.depth_sub = rospy.Subscriber(
             depth_topic_name, PointCloud2, self.depth_cb)
-        self.marker_pub = rospy.Publisher("visualization_marker", Marker)
+        self.marker_pub = rospy.Publisher("visualization_marker", Marker, queue_size=100)
         self.ballloc_pixel = [0, 0]
         self.ballloc_xyz = [0, 0, 0]
 
@@ -75,17 +75,17 @@ class Tracker3D():
         marker = Marker()
         marker.type = marker.SPHERE
         marker.action = marker.ADD
-        marker.pose.position.x = self.ballloc_xyz[0]
-        marker.pose.position.y = self.ballloc_xyz[1]
-        marker.pose.position.z = self.ballloc_xyz[2]
+        marker.pose.position.x = self.ballloc_xyz[2]
+        marker.pose.position.y = -self.ballloc_xyz[0]
+        marker.pose.position.z = -self.ballloc_xyz[1]
         marker.color.r = 0.0
         marker.color.g = 1.0
         marker.color.b = 0.0
         marker.color.a = 1.0
-        marker.scale.x = 0.1
-        marker.scale.y = 0.1
-        marker.scale.z = 0.1
-        marker.header.frame_id = "/map" # TODO: Change this
+        marker.scale.x = 0.1524
+        marker.scale.y = 0.1524
+        marker.scale.z = 0.1524
+        marker.header.frame_id = "/d400_depth_frame" # TODO: Change this
         self.marker_pub.publish(marker)
 
     def image_cb(self, data):
@@ -98,7 +98,7 @@ class Tracker3D():
 
         # Define lower and upper range of the colors to generate a mask using hsv
         sensitivity = 15
-        lower_green = np.array([60-sensitivity, 90, 90])
+        lower_green = np.array([60-sensitivity, 80, 80])
         upper_green = np.array([60+sensitivity, 255, 255])
         mask = cv2.inRange(cv_image_hsv, lower_green, upper_green)
 

@@ -7,6 +7,7 @@ arduino-cli upload --port /dev/ttyACM0 --fqbn arduino:avr:uno ~/{PATH_TO_SKETCH}
 
 ---- Launch Cameras ----
 roslaunch realsense2_camera rs_d400_and_t265.launch
+roslaunch team3_2dnav custom_dual_camera.launch
 
 
 ---- Launch Config ----
@@ -50,3 +51,6 @@ roslaunch rtabmap_ros rtabmap.launch \
 
 ---- Ball Detection ----
 rosrun ball_detect BallDetect_skeleton.py
+
+---- View Frame Tree ----
+rosrun rqt_tf_tree rqt_tf_tree

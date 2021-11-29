@@ -7,6 +7,7 @@ arduino-cli upload --port /dev/ttyACM0 --fqbn arduino:avr:uno ~/{PATH_TO_SKETCH}
 
 ---- Launch Cameras ----
 roslaunch realsense2_camera rs_d400_and_t265.launch
+roslaunch team3_2dnav custom_dual_camera.launch
 
 
 ---- Launch Config ----
@@ -29,7 +30,7 @@ roslaunch rtabmap_ros rtabmap.launch \
    approx_rgbd_sync:=false \
    visual_odometry:=false \
    localization:=true \
-   database_path:="/home/team3/Desktop/rtabmap.db"
+   database_path:="/home/team3/Desktop/frontLabMap.db"
 
 Paths: /home/team3/Desktop/backLabMap.db
 	/home/team3/Desktop/firstmap.db
@@ -46,3 +47,10 @@ roslaunch rtabmap_ros rtabmap.launch \
    camera_info_topic:=/d400/color/camera_info \
    approx_rgbd_sync:=false \
    visual_odometry:=false
+
+
+---- Ball Detection ----
+rosrun ball_detect BallDetect_skeleton.py
+
+---- View Frame Tree ----
+rosrun rqt_tf_tree rqt_tf_tree

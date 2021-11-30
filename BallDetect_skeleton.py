@@ -86,6 +86,8 @@ class Tracker3D():
         marker.scale.y = 0.1524
         marker.scale.z = 0.1524
         marker.header.frame_id = "/d400_depth_frame" # TODO: Change this
+        rospy.set_param('ball_x', self.ballloc_xyz[2])
+        rospy.set_param('ball_y', -self.ballloc_xyz[0])
         self.marker_pub.publish(marker)
 
     def image_cb(self, data):

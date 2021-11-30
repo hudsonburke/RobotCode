@@ -31,6 +31,24 @@ roslaunch rtabmap_ros rtabmap.launch \
    visual_odometry:=false \
    localization:=true \
    database_path:="/home/team3/Desktop/frontLabMap.db"
+   
+ -- AR Tag Launch----
+roslaunch rtabmap_ros test_apriltag_ros.launch rgb_topic:=/d400/color/image_raw camera_info_topic:=/d400/color/camera_info
+   
+-- Localization using AR tags --
+roslaunch rtabmap_ros rtabmap.launch \
+   args:="--Mem/UseOdomGravity true --Optimizer/GravitySigma 0.3 --Optimizer/Strategy 1" \
+   odom_topic:=/t265/odom/sample \
+   frame_id:=t265_link \
+   rgbd_sync:=true \
+   depth_topic:=/d400/aligned_depth_to_color/image_raw \
+   rgb_topic:=/d400/color/image_raw \
+   camera_info_topic:=/d400/color/camera_info \
+   approx_rgbd_sync:=false \
+   visual_odometry:=false \
+   localization:=true \
+   landmark_angular_variance:=9999 \
+   database_path:="/home/team3/Desktop/expRobot.db"
 
 Paths: /home/team3/Desktop/backLabMap.db
 	/home/team3/Desktop/firstmap.db

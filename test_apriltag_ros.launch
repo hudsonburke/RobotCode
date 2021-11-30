@@ -5,9 +5,25 @@
   <!-- Change Optimizer/Strategy below between 1 (g2o) and 2 (GTSAM), and landmark_angular_variance between 0.005 (optimize rotation) and 9999 (optimize only tag's XYZ) -->
 
   <!-- $ roslaunch realsense2_camera rs_camera.launch align_depth:=true -->
-  <!-- $ roslaunch rtabmap_ros test_apriltag_ros.launch rgb_topic:=/camera/color/image_raw camera_info_topic:=/camera/color/camera_info -->
-  <!-- $ roslaunch rtabmap_ros rtabmap.launch depth_topic:=/camera/aligned_depth_to_color/image_raw rgb_topic:=/camera/color/image_raw camera_info_topic:=/camera/color/camera_info rviz:=true rtabmapviz:=false args:="-d -Optimizer/Strategy 1" landmark_angular_variance:=9999 -->
-
+  roslaunch team3_2dnav custom_dual_camera.launch
+  <!-- $ roslaunch rtabmap_ros test_apriltag_ros.launch rgb_topic:=/d400/color/image_raw camera_info_topic:=/d400/color/camera_info -->
+  <!-- $ roslaunch rtabmap_ros rtabmap.launch depth_topic:=/camera/aligned_depth_to_color/image_raw rviz:=true rtabmapviz:=false   -->
+  
+  roslaunch rtabmap_ros rtabmap.launch \
+   args:="--Mem/UseOdomGravity true --Optimizer/GravitySigma 0.3 -d -Optimizer/Strategy 1" \
+   odom_topic:=/t265/odom/sample \
+   frame_id:=t265_link \
+   rgbd_sync:=true \
+   depth_topic:=/d400/aligned_depth_to_color/image_raw \
+   rgb_topic:=/d400/color/image_raw \
+   camera_info_topic:=/d400/color/camera_info \
+   approx_rgbd_sync:=false \
+   visual_odometry:=false \
+   localization:=true \
+   landmark_angular_variance:=9999 \
+   database_path:="/home/team3/Desktop/expRobot.db"
+  
+  
   <arg name="camera_frame_id"         default="camera_color_optical_frame"/>
   <arg name="rgb_topic"               default="/camera/rgb/image_rect_color" />
   <arg name="camera_info_topic"       default="/camera/rgb/camera_info" />

@@ -9,8 +9,8 @@
   <!-- $ roslaunch rtabmap_ros test_apriltag_ros.launch rgb_topic:=/d400/color/image_raw camera_info_topic:=/d400/color/camera_info -->
   <!-- $ roslaunch rtabmap_ros rtabmap.launch depth_topic:=/camera/aligned_depth_to_color/image_raw rviz:=true rtabmapviz:=false   -->
   
-  roslaunch rtabmap_ros rtabmap.launch \
-   args:="--Mem/UseOdomGravity true --Optimizer/GravitySigma 0.3 -d -Optimizer/Strategy 1" \
+roslaunch rtabmap_ros rtabmap.launch \
+   args:="--Mem/UseOdomGravity true --Optimizer/GravitySigma 0.3 --Optimizer/Strategy 1" \
    odom_topic:=/t265/odom/sample \
    frame_id:=t265_link \
    rgbd_sync:=true \

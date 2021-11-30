@@ -4,10 +4,8 @@
   <!-- The TF published by apriltag_ros should match the point cloud created by the camera -->
   <!-- Change Optimizer/Strategy below between 1 (g2o) and 2 (GTSAM), and landmark_angular_variance between 0.005 (optimize rotation) and 9999 (optimize only tag's XYZ) -->
 
-  <!-- $ roslaunch realsense2_camera rs_camera.launch align_depth:=true -->
-  roslaunch team3_2dnav custom_dual_camera.launch
+  <!-- roslaunch team3_2dnav custom_dual_camera.launch -->
   <!-- $ roslaunch rtabmap_ros test_apriltag_ros.launch rgb_topic:=/d400/color/image_raw camera_info_topic:=/d400/color/camera_info -->
-  <!-- $ roslaunch rtabmap_ros rtabmap.launch depth_topic:=/camera/aligned_depth_to_color/image_raw rviz:=true rtabmapviz:=false   -->
   
 roslaunch rtabmap_ros rtabmap.launch \
    args:="--Mem/UseOdomGravity true --Optimizer/GravitySigma 0.3 --Optimizer/Strategy 1" \

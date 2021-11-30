@@ -32,6 +32,9 @@ roslaunch rtabmap_ros rtabmap.launch \
    localization:=true \
    database_path:="/home/team3/Desktop/frontLabMap.db"
    
+ -- AR Tag Launch----
+roslaunch rtabmap_ros test_apriltag_ros.launch rgb_topic:=/camera/color/image_raw camera_info_topic:=/camera/color/camera_info
+   
 -- Localization using AR tags --
 roslaunch rtabmap_ros rtabmap.launch \
    args:="--Mem/UseOdomGravity true --Optimizer/GravitySigma 0.3 --Optimizer/Strategy 1" \

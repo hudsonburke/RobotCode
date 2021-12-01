@@ -30,9 +30,10 @@ class CTFStateMachine():
         
         
     def override_cb(self, data):
-        if(data.linear.x != 0.0):
+        if(data.linear.x != 0.0 and self.override == False):
             rospy.loginfo("Changing override to True.")
             self.override = True
+            self.drive(0,0)
         else:
             rospy.loginfo("Changing override to False.")
             self.override = False

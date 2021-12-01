@@ -124,7 +124,7 @@ class CTFStateMachine():
             rospy.loginfo("Can't see the ball.")
             self.drive(turn=0.2)
 
-    def navToGoalRegion(self, x=5.5, y=-4.5):
+    def navToGoalRegion(self, x=5, y=-4):
         self.navigate(x, y)
         self.state = "Done"
 

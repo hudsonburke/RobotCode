@@ -1,0 +1,48 @@
+Checklist
+
+1. 
+roscore
+
+2. 
+source ~/catkin_ws/devel/setup.bash 
+roslaunch team3_2dnav custom_dual_camera.launch
+
+3. 
+source ~/catkin_ws/devel/setup.bash 
+roslaunch team3_2dnav my_robot_configuration.launch
+
+4. 
+roslaunch rtabmap_ros test_apriltag_ros.launch rgb_topic:=/d400/color/image_raw camera_info_topic:=/d400/color/camera_info
+
+5. 
+roslaunch rtabmap_ros rtabmap.launch \
+   args:="--Mem/UseOdomGravity true --Optimizer/GravitySigma 0.3 --Optimizer/Strategy 1" \
+   odom_topic:=/t265/odom/sample \
+   frame_id:=t265_link \
+   rgbd_sync:=true \
+   depth_topic:=/d400/aligned_depth_to_color/image_raw \
+   rgb_topic:=/d400/color/image_raw \
+   camera_info_topic:=/d400/color/camera_info \
+   approx_rgbd_sync:=false \
+   visual_odometry:=false \
+   localization:=true \
+   landmark_angular_variance:=9999 \
+   database_path:="/home/team3/Desktop/expRobot.db"
+
+6. 
+source ~/catkin_ws/devel/setup.bash 
+rosrun ball_detect BallDetect_skeleton.py
+
+7. 
+rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0
+
+<!-- Run Rosserial Arduino (this could be done separately)-->
+ <node pkg="rosserial_python" type="serial_node.py" name="serial_node">
+    <param name="port" value="/dev/ttyACM0"/>
+ </node>
+
+
+8. 
+source ~/catkin_ws/devel/setup.bash 
+rosrun team3_2dnav NavigationState.py
+
